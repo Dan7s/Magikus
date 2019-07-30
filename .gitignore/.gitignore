@@ -1,5 +1,5 @@
 #ignore .pyc files
-.pyc
+*.pyc
 
 #ignore __pycache__/
 __pycache__/
