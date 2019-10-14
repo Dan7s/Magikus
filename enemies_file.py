@@ -4,11 +4,45 @@ pygame.init()
 
 class enemies_group_class():
 	group_enemies = pygame.sprite.Group()
+
+#there is a problem :/
+enemiesTypes = {
+	Enemy_Slime() : 0,
+}
+
+class enemies_spawner(py.game.sprite.Sprite):
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
 		
-#BASIC_ZOMBIE------------------------------------------------------------------------------------------------------------
+		self.image= pygame.image.load("sprites/enemies_spawer_1.png")
+		
+		self.rect = self.image.get_rect()
+		self.rect.x = 0
+		self.rect.y = 0
+		
+		self.maxHP = 3
+		self.HP = self.maxHP
+		self.spawnSpeed = 2
+		
+		self.enemyType = 0
+		self.spawnSlimeCD = 0
+		self.spawnSlimeCDMax = utils.spawnSlimeCDMax
+	
+	def spawnEnemy(self, type, actualDifficulty, spawnerRect):
+		self.spawnSlimeCD -= 1
+		if self.spawnCD <= 0:
+			newEnemy = utils.enemiesTypes(type)
+			newEnemy.maxHP *= actualDifficulty
+			newEnemy.HP *= actualDifficulty
+			enemies_group_class.group_enemies.add(newEnemy)
+			
+			#random spawn location code
+			
+			
+#BASIC_SLIME------------------------------------------------------------------------------------------------------------
 
 spawnSlimeCD = 0
-spawnSlimeCDMax = 35
+spawnSlimeCDMax = utils.spawnSlimeCDMax
 
 def spawnSlime(actualDifficulty, mapWidth, mapHeight):
 	global spawnSlimeCD, spawnSlimeCDMax
@@ -37,7 +71,6 @@ def spawnSlime(actualDifficulty, mapWidth, mapHeight):
 		spawnSlimeCD = spawnSlimeCDMax
 
 class Enemy_Slime(pygame.sprite.Sprite):
-	
 	def __init__(self):
 			pygame.sprite.Sprite.__init__(self)
 			

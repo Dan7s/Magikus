@@ -1,4 +1,4 @@
-import pygame, random, math
+import pygame, random, math, enemies_file
 pygame.init()
 
 black = (0, 0, 0)
@@ -35,6 +35,9 @@ difficulty = {
 	3 : "hard",
 	4 : "extreme",
 }
+
+#enemies spawn cd
+spawnSlimeCDMax = 35
 
 class HudBars():
 	def __init__(self):

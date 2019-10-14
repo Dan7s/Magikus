@@ -24,6 +24,8 @@ class mainMap():
 		
 		randChunkType = 0
 		
+		#add spawners to generate system
+		
 		for x in range(0, 7):
 			for y in range(0, 7):
 				if randChunkType == 0:
