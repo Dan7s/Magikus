@@ -5,12 +5,8 @@ pygame.init()
 class enemies_group_class():
 	group_enemies = pygame.sprite.Group()
 
-#there is a problem :/
-enemiesTypes = {
-	Enemy_Slime() : 0,
-}
 
-class enemies_spawner(py.game.sprite.Sprite):
+class enemies_spawner(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		
@@ -31,7 +27,7 @@ class enemies_spawner(py.game.sprite.Sprite):
 	def spawnEnemy(self, type, actualDifficulty, spawnerRect):
 		self.spawnSlimeCD -= 1
 		if self.spawnCD <= 0:
-			newEnemy = utils.enemiesTypes(type)
+			newEnemy = Enemy_Slime()
 			newEnemy.maxHP *= actualDifficulty
 			newEnemy.HP *= actualDifficulty
 			enemies_group_class.group_enemies.add(newEnemy)
