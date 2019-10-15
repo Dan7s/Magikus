@@ -10,6 +10,8 @@ class mainMap():
 		self.offsetX = 0
 		self.offsetY = 0
 		self.scrollSpeed = 10
+		self.spawnersMax = 4
+		self.spawnersGened = 0
 		
 	def generateMap(self):
 		self.mapWidth =  7 * self.chunkSize
@@ -23,8 +25,7 @@ class mainMap():
 		grass_image_2 = pygame.image.load("sprites/map_0/grass_2.png")
 		
 		randChunkType = 0
-		
-		#add spawners to generate system
+		randSpawnerGen = 0
 		
 		for x in range(0, 7):
 			for y in range(0, 7):
@@ -34,8 +35,11 @@ class mainMap():
 					self.mapImage.blit(grass_image_1, (x*self.chunkSize, y*self.chunkSize))
 				else:
 					self.mapImage.blit(grass_image_2, (x*self.chunkSize, y*self.chunkSize))
+				if self.spawnersGened < self.spawnersMax and randSpawnerGen == 1:
+					print(x, y)
 					
 				randChunkType = random.choice([0, 0, 1, 1, 2])
+				randChunkGen = random.choice([0, 0, 0, 0, 0, 1])
 	
 	def reloadMap(self):
 		self.activeMap = self.mapImage.copy()

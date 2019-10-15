@@ -1,4 +1,4 @@
-import pygame, random, math, enemies_file
+import pygame, random, math
 pygame.init()
 
 black = (0, 0, 0)
