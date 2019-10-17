@@ -19,6 +19,7 @@ class GAME():
 		self.clock = pygame.time.Clock()
 		#class_shourtcuts
 		self.group_all_enemies = enemies_file.enemies_group_class.group_enemies
+		self.group_all_spawners = enemies_file.spawners_group_class.group_spawners
 		self.enemy_slime = enemies_file.Enemy_Slime
 		self.player = PlayerActive()
 		#settings
@@ -140,6 +141,8 @@ class GAME():
 		self.gw.fill(utils.black)
 		for enemy in self.group_all_enemies:
 			enemy.destroy()
+		for spawner in self.group_all_spawners:
+			spawner.destroy()
 		self.player.health = self.player.healthMax
 		self.player.bullets.empty()
 		self.player.exp = 0
@@ -353,14 +356,16 @@ class GAME():
 					self.player.addExp(1*self.actualDifficulty)
 
 
-			#enemies_spawn
+			#enemies_spawn - old way
 			if self.actualDifficulty > 0:
 				enemies_file.spawnSlime(self.actualDifficulty, self.map.mapWidth, self.map.mapHeight)
 			else:
 				pass
 
+			enemies_file.createSpawner(self.actualDifficulty, self.map.mapWidth, self.map.mapHeight)
 
 			#updates
+			self.group_all_spawners.draw(self.map.activeMap)
 			self.player.update(cur, self.map.activeMap, self.map.mapWidth, self.map.mapHeight)
 			self.group_all_enemies.update(self.player)
 			self.group_all_enemies.draw(self.map.activeMap)
