@@ -36,9 +36,6 @@ difficulty = {
 	4 : "extreme",
 }
 
-#enemies spawn cd
-spawnSlimeCDMax = 35
-
 class HudBars():
 	def __init__(self):
 		self.barHeight = 20

@@ -17,36 +17,6 @@ def createSpawner(actualDifficulty, mapWidth, mapHeight):
 	
 	newSpawner.rect.x = random.randint(0, mapWidth-10)
 	newSpawner.rect.y = random.randint(0, mapHeight-10)
-	
-#creating slime - old method
-spawnSlimeCD = 0
-spawnSlimeCDMax = utils.spawnSlimeCDMax
-
-def spawnSlime(actualDifficulty, mapWidth, mapHeight):
-	global spawnSlimeCD, spawnSlimeCDMax
-	spawnSlimeCD -= 1
-	if spawnSlimeCD <= 0:
-		newEnemy = Enemy_Slime()
-		newEnemy.maxHP *= actualDifficulty
-		newEnemy.HP *= actualDifficulty
-		enemies_group_class.group_enemies.add(newEnemy)
-
-		spawnSide = random.choice([1, 2, 3, 4])
-		
-		if spawnSide == 1:
-			newEnemy.rect.x = -10
-			newEnemy.rect.y = -10
-		elif spawnSide == 2:
-			newEnemy.rect.x = mapWidth + 10
-			newEnemy.rect.y = -10
-		elif spawnSide == 3:
-			newEnemy.rect.x = -10
-			newEnemy.rect.y = mapHeight + 10
-		else:
-			newEnemy.rect.x = mapWidth + 10
-			newEnemy.rect.y = mapHeight + 10
-			
-		spawnSlimeCD = spawnSlimeCDMax
 
 #spawner class
 class enemies_spawner(pygame.sprite.Sprite):
@@ -65,17 +35,21 @@ class enemies_spawner(pygame.sprite.Sprite):
 		
 		self.enemyType = 0
 		self.spawnSlimeCD = 0
-		self.spawnSlimeCDMax = utils.spawnSlimeCDMax
+		self.spawnSlimeCDMax = 45
 		
-	def spawnEnemy(self, type, actualDifficulty):
+	def spawnEnemy(self, actualDifficulty):
 		self.spawnSlimeCD -= 1
-		if self.spawnCD <= 0:
+		if self.spawnSlimeCD <= 0:
 			newEnemy = Enemy_Slime()
 			newEnemy.maxHP *= actualDifficulty
 			newEnemy.HP *= actualDifficulty
 			enemies_group_class.group_enemies.add(newEnemy)
 			
-			#random spawn location code
+			newEnemy.rect.x = self.rect.x + random.randint(-100, 100)
+			newEnemy.rect.y = self.rect.y + random.randint(-100, 100)
+			
+			self.spawnSlimeCD = self.spawnSlimeCDMax
+			
 		
 	def takeDemage(self):
 		self.HP -= 1
@@ -85,6 +59,9 @@ class enemies_spawner(pygame.sprite.Sprite):
 		
 	def destroy(self):
 		self.kill()
+		
+	def update(self, actualDifficulty):
+		self.spawnEnemy(actualDifficulty)
 			
 			
 #BASIC_SLIME------------------------------------------------------------------------------------------------------------

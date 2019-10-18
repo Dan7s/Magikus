@@ -1,4 +1,4 @@
-import pygame, utils, random
+import pygame, utils, random, enemies_file
 pygame.init()
 
 #main_map
@@ -11,7 +11,13 @@ class mainMap():
 		self.offsetY = 0
 		self.scrollSpeed = 10
 		
-	def generateMap(self):
+	#generating spawners
+	def generateSpawners(self, actualDifficulty):
+		for z in range(0, actualDifficulty*2):
+			enemies_file.createSpawner(actualDifficulty, self.mapWidth, self.mapHeight)
+		
+	#generating map
+	def generateMap(self, actualDifficulty):
 		self.mapWidth =  7 * self.chunkSize
 		self.mapHeight = 7 * self.chunkSize
 		
@@ -34,10 +40,14 @@ class mainMap():
 					self.mapImage.blit(grass_image_2, (x*self.chunkSize, y*self.chunkSize))
 					
 				randChunkType = random.choice([0, 0, 1, 1, 2])
+				
+		self.generateSpawners(actualDifficulty)
 	
+	#reloading map
 	def reloadMap(self):
 		self.activeMap = self.mapImage.copy()
 	
+	#update
 	def update(self, gw, playerRect):
 		gw_rect = gw.get_rect()
 		
