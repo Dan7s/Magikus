@@ -184,7 +184,8 @@ class GAME():
 					self.actualDifficulty += 1
 				else:
 					self.actualDifficulty = 0
-				self.map.generateSpawners(self.actualDifficulty)
+				if options_type == "inGame":
+					self.map.generateSpawners(self.actualDifficulty)
 			if display_mode_switch.isClicked():
 				if self.displayMode < 2:
 					self.displayMode += 1
@@ -355,8 +356,12 @@ class GAME():
 			for enemy in BulletCollisions:
 				if enemy.takeDemage() == True:
 					self.player.addExp(1*self.actualDifficulty)
-
-
+			
+			#game_over
+			print(self.clock)
+			if self.player.health <= 0:
+				self.gameover()
+			
 			#updates
 			self.group_all_spawners.update(self.actualDifficulty)
 			self.group_all_spawners.draw(self.map.activeMap)
@@ -373,12 +378,6 @@ class GAME():
 			hud_bars.update(self.gw, self.player.health, self.player.healthMax, len(self.player.mana), self.player.manaMax, self.player.exp)
 			
 			
-			#game_over
-			print(self.clock)
-			if self.player.health <= 0:
-				self.gameover()
-				
-
 			#end
 			pygame.display.update()
 			self.clock.tick(self.FPS)
