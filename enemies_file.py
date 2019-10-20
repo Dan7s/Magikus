@@ -5,6 +5,7 @@ pygame.init()
 #groups
 class enemies_group_class():
 	group_enemies = pygame.sprite.Group()
+	max_enemies = 200
 class spawners_group_class():
 	group_spawners = pygame.sprite.Group()
 
@@ -39,7 +40,7 @@ class enemies_spawner(pygame.sprite.Sprite):
 		
 	def spawnEnemy(self, actualDifficulty):
 		self.spawnSlimeCD -= 1
-		if self.spawnSlimeCD <= 0:
+		if self.spawnSlimeCD <= 0 and len(enemies_group_class.group_enemies) <= enemies_group_class.max_enemies:
 			newEnemy = Enemy_Slime()
 			newEnemy.maxHP *= actualDifficulty
 			newEnemy.HP *= actualDifficulty

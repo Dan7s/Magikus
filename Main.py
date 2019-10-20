@@ -358,7 +358,7 @@ class GAME():
 					self.player.addExp(1*self.actualDifficulty)
 			
 			#game_over
-			print(self.clock)
+			print(self.clock, len(self.group_all_enemies))
 			if self.player.health <= 0:
 				self.gameover()
 			
