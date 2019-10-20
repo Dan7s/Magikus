@@ -19,6 +19,7 @@ class GAME():
 		self.clock = pygame.time.Clock()
 		#class_shourtcuts
 		self.group_all_enemies = enemies_file.enemies_group_class.group_enemies
+		self.group_all_spawners = enemies_file.spawners_group_class.group_spawners
 		self.enemy_slime = enemies_file.Enemy_Slime
 		self.player = PlayerActive()
 		#settings
@@ -80,7 +81,7 @@ class GAME():
 				
 			#Buttons
 			if start_button.isClicked():
-				self.map.generateMap()
+				self.map.generateMap(self.actualDifficulty)
 				self.playGame()
 			if options_button.isClicked():
 				self.options("inMenu")
@@ -140,6 +141,8 @@ class GAME():
 		self.gw.fill(utils.black)
 		for enemy in self.group_all_enemies:
 			enemy.destroy()
+		for spawner in self.group_all_spawners:
+			spawner.destroy()
 		self.player.health = self.player.healthMax
 		self.player.bullets.empty()
 		self.player.exp = 0
@@ -147,7 +150,7 @@ class GAME():
 		self.player.rect.x = self.gw.get_rect().centerx - self.player.rect.w/2
 		self.player.rect.y = self.gw.get_rect().centery - self.player.rect.h/2
 		self.player.isAlive = True
-		self.map.generateMap()
+		self.map.generateMap(self.actualDifficulty)
 		self.playGame()
 	
 	#options
@@ -181,6 +184,7 @@ class GAME():
 					self.actualDifficulty += 1
 				else:
 					self.actualDifficulty = 0
+				self.map.generateSpawners(self.actualDifficulty)
 			if display_mode_switch.isClicked():
 				if self.displayMode < 2:
 					self.displayMode += 1
@@ -282,7 +286,7 @@ class GAME():
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
-					quit()-1700
+					quit()
 
 				if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 					self.pause()
@@ -353,14 +357,9 @@ class GAME():
 					self.player.addExp(1*self.actualDifficulty)
 
 
-			#enemies_spawn
-			if self.actualDifficulty > 0:
-				enemies_file.spawnSlime(self.actualDifficulty, self.map.mapWidth, self.map.mapHeight)
-			else:
-				pass
-
-
 			#updates
+			self.group_all_spawners.update(self.actualDifficulty)
+			self.group_all_spawners.draw(self.map.activeMap)
 			self.player.update(cur, self.map.activeMap, self.map.mapWidth, self.map.mapHeight)
 			self.group_all_enemies.update(self.player)
 			self.group_all_enemies.draw(self.map.activeMap)

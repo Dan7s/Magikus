@@ -2,15 +2,28 @@ import pygame, random, math
 import utils
 pygame.init()
 
+#groups
 class enemies_group_class():
 	group_enemies = pygame.sprite.Group()
+class spawners_group_class():
+	group_spawners = pygame.sprite.Group()
 
+#creafing spawner
+def createSpawner(actualDifficulty, mapWidth, mapHeight):
+	newSpawner = enemies_spawner()
+	newSpawner.maxHP *= actualDifficulty
+	newSpawner.HP = newSpawner.maxHP
+	spawners_group_class.group_spawners.add(newSpawner)
+	
+	newSpawner.rect.x = random.randint(0, mapWidth-10)
+	newSpawner.rect.y = random.randint(0, mapHeight-10)
 
+#spawner class
 class enemies_spawner(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
 		
-		self.image= pygame.image.load("sprites/enemies_spawer_1.png")
+		self.image= pygame.image.load("sprites/enemies_spawner_1.png")
 		
 		self.rect = self.image.get_rect()
 		self.rect.x = 0
@@ -22,49 +35,36 @@ class enemies_spawner(pygame.sprite.Sprite):
 		
 		self.enemyType = 0
 		self.spawnSlimeCD = 0
-		self.spawnSlimeCDMax = utils.spawnSlimeCDMax
-	
-	def spawnEnemy(self, type, actualDifficulty, spawnerRect):
+		self.spawnSlimeCDMax = 45
+		
+	def spawnEnemy(self, actualDifficulty):
 		self.spawnSlimeCD -= 1
-		if self.spawnCD <= 0:
+		if self.spawnSlimeCD <= 0:
 			newEnemy = Enemy_Slime()
 			newEnemy.maxHP *= actualDifficulty
 			newEnemy.HP *= actualDifficulty
 			enemies_group_class.group_enemies.add(newEnemy)
 			
-			#random spawn location code
+			newEnemy.rect.x = self.rect.x + random.randint(-100, 100)
+			newEnemy.rect.y = self.rect.y + random.randint(-100, 100)
+			
+			self.spawnSlimeCD = self.spawnSlimeCDMax
+			
+		
+	def takeDemage(self):
+		self.HP -= 1
+		if self.HP <= 0:
+			self.destroy()
+			return True
+		
+	def destroy(self):
+		self.kill()
+		
+	def update(self, actualDifficulty):
+		self.spawnEnemy(actualDifficulty)
 			
 			
 #BASIC_SLIME------------------------------------------------------------------------------------------------------------
-
-spawnSlimeCD = 0
-spawnSlimeCDMax = utils.spawnSlimeCDMax
-
-def spawnSlime(actualDifficulty, mapWidth, mapHeight):
-	global spawnSlimeCD, spawnSlimeCDMax
-	spawnSlimeCD -= 1
-	if spawnSlimeCD <= 0:
-		newEnemy = Enemy_Slime()
-		newEnemy.maxHP *= actualDifficulty
-		newEnemy.HP *= actualDifficulty
-		enemies_group_class.group_enemies.add(newEnemy)
-
-		spawnSide = random.choice([1, 2, 3, 4])
-		
-		if spawnSide == 1:
-			newEnemy.rect.x = -10
-			newEnemy.rect.y = -10
-		elif spawnSide == 2:
-			newEnemy.rect.x = mapWidth + 10
-			newEnemy.rect.y = -10
-		elif spawnSide == 3:
-			newEnemy.rect.x = -10
-			newEnemy.rect.y = mapHeight + 10
-		else:
-			newEnemy.rect.x = mapWidth + 10
-			newEnemy.rect.y = mapHeight + 10
-			
-		spawnSlimeCD = spawnSlimeCDMax
 
 class Enemy_Slime(pygame.sprite.Sprite):
 	def __init__(self):
