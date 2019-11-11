@@ -12,7 +12,7 @@ class spawners_group_class():
 #creafing spawner
 def createSpawner(actualDifficulty, mapWidth, mapHeight):
 	newSpawner = enemies_spawner()
-	newSpawner.maxHP *= actualDifficulty
+	newSpawner.maxHP *= round(actualDifficulty/2)
 	newSpawner.HP = newSpawner.maxHP
 	spawners_group_class.group_spawners.add(newSpawner)
 	

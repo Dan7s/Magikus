@@ -278,9 +278,9 @@ class GAME():
 		Game_Running = True
 		#hud preapare
 		hud_bars = HudBars()
-		wave_icon = SpellIcon("sprites/icons/wave_icon.png", (self.gw.get_rect().right - 135, self.gw.get_rect().top + 5 ), self.player.waveCD, self.player.waveCost, 1)
-		wall_icon = SpellIcon("sprites/icons/wall_icon.png", (self.gw.get_rect().right - 90, self.gw.get_rect().top + 5), self.player.wallCD, self.player.wallCost, 2)
-		healing_icon = SpellIcon("sprites/icons/healing_icon.png", (self.gw.get_rect().right - 45, self.gw.get_rect().top + 5), self.player.healCD, self.player.healCost, 3)
+		wave_icon = SpellIcon("sprites/icons/wave_icon.png", self.gw, self.player.waveCD, self.player.waveCost, 1)
+		wall_icon = SpellIcon("sprites/icons/wall_icon.png", self.gw, self.player.wallCD, self.player.wallCost, 2)
+		healing_icon = SpellIcon("sprites/icons/healing_icon.png", self.gw, self.player.healCD, self.player.healCost, 3)
 		
 		#game loop
 		while Game_Running:

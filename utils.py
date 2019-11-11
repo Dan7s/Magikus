@@ -36,6 +36,19 @@ difficulty = {
 	4 : "extreme",
 }
 
+skillSlot = {
+	0 : 5,
+	1 : 50,
+	2 : 95,
+	3 : 140,
+	4 : 185,
+	5 : 230,
+	6 : 275,
+	7 : 320,
+	8 : 365,
+	9 : 410,
+}
+
 class HudBars():
 	def __init__(self):
 		self.barHeight = 20
@@ -75,13 +88,13 @@ class HudBars():
 		gw.blit(self.expBase, (5, 55))
 
 class SpellIcon():
-	def __init__(self, icon, pos, cd, manaCost, skillNum):
+	def __init__(self, icon, gw, cd, manaCost, skillNum):
 		self.icon = icon
 		self.manaCost = manaCost
 		self.cd = cd
 		
 		self.image = pygame.image.load(self.icon)
-		self.rect = pos
+		self.rect = (gw.get_rect().right-45, gw.get_rect().top+skillSlot[skillNum-1])
 		
 		self.buttonText = pygame.font.Font(None, 20).render(str(skillNum), 1, white)
 		
