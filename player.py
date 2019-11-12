@@ -33,7 +33,20 @@ class PlayerActive(pygame.sprite.Sprite):
 			self.healCD = 0
 			self.healCost = 5
 			
+			self.spellbinding = {
+				1 : self.summon_wave,
+				2 : self.summon_wall,
+				3 : self.heal_spell,
+				4 : 0,
+				5 : 0,
+				6 : 0,
+				7 : 0,
+				8 : 0,
+				9 : 0,
+			}
+			
 			self.isAlive = True
+			
 			
 		def move(self, xdir, ydir):
 			self.rect.x += xdir*self.speed
@@ -173,7 +186,7 @@ class PlayerActive(pygame.sprite.Sprite):
 					target = target[0] + target_mod_x, target[1] + target_mod_y
 					
 					
-		def heal_spell(self):
+		def heal_spell(self, target):
 			if len(self.mana) >= self.healCost and self.health < self.healthMax and self.healCD <= 0:
 				self.healCD = 1 * 30
 				bullet = self.mana.sprites()[0:self.healCost]

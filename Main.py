@@ -66,7 +66,7 @@ class GAME():
 		self.gw.fill(utils.black)
 		#Text and Buttons
 		self.DisplayText('made by Dan7s', self.gw.get_rect().left + 10, self.gw.get_rect().top + 10, 25, utils.white)
-		self.DisplayText('beta 0.8.4', self.gw.get_rect().right - 90, self.gw.get_rect().top + 10, 25, utils.white)
+		self.DisplayText('beta 0.8.8', self.gw.get_rect().right - 90, self.gw.get_rect().top + 10, 25, utils.white)
 		self.DisplayText('Magikus', self.gw.get_rect().centerx - 160, self.gw.get_rect().centery - 205, 120, utils.red)
 		self.DisplayText('Magikus', self.gw.get_rect().centerx - 165, self.gw.get_rect().centery - 195, 120, utils.blue)
 		start_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery - 50), (200, 50), utils.blue, "Start Game")
@@ -292,7 +292,6 @@ class GAME():
 				if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 					self.pause()
 
-
 			#Player_controll
 			activeKey = pygame.key.get_pressed()
 			cur = pygame.mouse.get_pos()
@@ -319,13 +318,13 @@ class GAME():
 				self.player.move(0, 1)
 
 			if activeKey[pygame.K_1]:
-				self.player.summon_wave(cur)
-
+				self.player.spellbinding.get(1)(cur)
+				
 			if activeKey[pygame.K_2]:
-				self.player.summon_wall(cur)
+				self.player.spellbinding.get(2)(cur)
 			
 			if activeKey[pygame.K_3]:
-				self.player.heal_spell()
+				self.player.spellbinding(3)(cur)
 
 
 			#window_fill
