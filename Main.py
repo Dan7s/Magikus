@@ -278,11 +278,13 @@ class GAME():
 		Game_Running = True
 		#hud preapare
 		hud_bars = HudBars()
-		wave_icon = SpellIcon("sprites/icons/wave_icon.png", self.gw, self.player.waveCD, self.player.waveCost, 1)
-		wall_icon = SpellIcon("sprites/icons/wall_icon.png", self.gw, self.player.wallCD, self.player.wallCost, 2)
-		healing_icon = SpellIcon("sprites/icons/healing_icon.png", self.gw, self.player.healCD, self.player.healCost, 3)
+		icon_group = []
 		
-		#skills on bar go in group here
+		#skills
+		for slot in utils.skillSlot:
+			if utils.skillSlot.get(slot) != 0:
+				icon = SpellIcon("sprites/icons/" + str(utils.skillSlot.get(slot)) + "_icon.png", self.gw, utils.cdMax.get(utils.skillSlot.get(slot)), utils.cost.get(utils.skillSlot.get(slot)), slot)
+				icon_group.insert(slot, icon)
 			
 		#game loop
 		while Game_Running:
@@ -320,31 +322,31 @@ class GAME():
 				self.player.move(0, 1)
 
 			if activeKey[pygame.K_1]:
-				self.player.spellbinding.get(1)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(1))(cur)
 				
 			if activeKey[pygame.K_2]:
-				self.player.spellbinding.get(2)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(2))(cur)
 			
 			if activeKey[pygame.K_3]:
-				self.player.spellbinding(3)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(3))(cur)
 				
 			if activeKey[pygame.K_4]:
-				self.player.spellbinding(4)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(4))(cur)
 				
 			if activeKey[pygame.K_5]:
-				self.player.spellbinding(5)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(5))(cur)
 
 			if activeKey[pygame.K_6]:
-				self.player.spellbinding(6)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(6))(cur)
 				
 			if activeKey[pygame.K_7]:
-				self.player.spellbinding(7)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(7))(cur)
 				
 			if activeKey[pygame.K_8]:
-				self.player.spellbinding(8)(cur)
+				self.player.spellbinding.get(utils.skillSlot.get(8))(cur)
 				
 			if activeKey[pygame.K_9]:
-				self.player.spellbinding(9)(cur)		
+				self.player.spellbinding.get(utils.skillSlot.get(9))(cur)
 		
 
 			#window_fill
@@ -391,9 +393,8 @@ class GAME():
 			
 			#hud_and_map
 			self.map.update(self.gw, self.player.rect)
-			wave_icon.update(self.gw, self.player.waveCD, len(self.player.mana))
-			wall_icon.update(self.gw, self.player.wallCD, len(self.player.mana))
-			healing_icon.update(self.gw, self.player.healCD, len(self.player.mana))
+			for icon in icon_group:
+				icon.update(self.gw, utils.cd.get(utils.skillSlot.get(icon.skillNum)), len(self.player.mana))
 			hud_bars.update(self.gw, self.player.health, self.player.healthMax, len(self.player.mana), self.player.manaMax, self.player.exp)
 			
 			

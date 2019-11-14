@@ -1,4 +1,5 @@
-import pygame, math, random
+import pygame, math, random 
+import utils
 pygame.init()
 
 #PLAYER----------------------------------------------------------------------------------------------------------------
@@ -23,21 +24,11 @@ class PlayerActive(pygame.sprite.Sprite):
 			self.bullets = pygame.sprite.Group()
 			self.exp = 0
 			
-			self.ShootCD = 5
-			self.ShootCDMax = 5
-			
-			self.waveCD = 0
-			self.waveCost = 10
-			self.wallCD = 0
-			self.wallCost = 5
-			self.healCD = 0
-			self.healCost = 5
-			
 			#simple skill list
 			self.spellbinding = {
-				1 : self.summon_wave,
-				2 : self.summon_wall,
-				3 : self.heal_spell,
+				'wave' : self.summon_wave,
+				'wall' : self.summon_wall,
+				'heal' : self.heal_spell,
 			}
 			
 			self.isAlive = True
@@ -117,8 +108,8 @@ class PlayerActive(pygame.sprite.Sprite):
 				self.image.blit(obj.image, obj.rect)
 		
 		def shoot(self, target):
-			if self.ShootCD <= 0 and self.mana:
-				self.ShootCD = self.ShootCDMax
+			if utils.cd.get('shoot') <= 0 and self.mana:
+				utils.cd['shoot'] = utils.cdMax.get('shoot')
 				bullet = self.mana.sprites()[0]
 				self.mana.remove(bullet)
 				
@@ -129,9 +120,9 @@ class PlayerActive(pygame.sprite.Sprite):
 				self.bullets.add(bullet)
 
 		def summon_wave(self, target):
-			if len(self.mana) >= self.waveCost and self.waveCD <= 0:
-				self.waveCD = 3 * 30
-				for x in range(0, self.waveCost):
+			if len(self.mana) >= utils.cost.get('wave') and utils.cd.get('wave') <= 0:
+				utils.cd['wave'] = utils.cdMax.get('wave')
+				for x in range(0, utils.cost.get('wave')):
 					bullet = self.mana.sprites()[0]
 					self.mana.remove(bullet)
 					
@@ -142,8 +133,8 @@ class PlayerActive(pygame.sprite.Sprite):
 					self.bullets.add(bullet)
 
 		def summon_wall(self, target):
-			if len(self.mana) >= self.wallCost and self.wallCD <= 0:
-				self.wallCD = 2 * 30
+			if len(self.mana) >= utils.cost.get('wall') and utils.cd.get('wall') <= 0:
+				utils.cd['wall'] = utils.cdMax.get('wall')
 				if self.player_state == "2":
 					target_mod_x = 30
 					target_mod_y = 30
@@ -168,7 +159,7 @@ class PlayerActive(pygame.sprite.Sprite):
 					target_mod_x = 1
 					target_mod_y = 40
 					target = target[0], target[1] - 80
-				for x in range(0, 5):
+				for x in range(0, utils.cost.get('wall')):
 					bullet = self.mana.sprites()[0]
 					self.mana.remove(bullet)
 
@@ -182,9 +173,9 @@ class PlayerActive(pygame.sprite.Sprite):
 					
 					
 		def heal_spell(self, target):
-			if len(self.mana) >= self.healCost and self.health < self.healthMax and self.healCD <= 0:
-				self.healCD = 1 * 30
-				bullet = self.mana.sprites()[0:self.healCost]
+			if len(self.mana) >= utils.cost.get('heal') and self.health < self.healthMax and utils.cd.get('heal') <= 0:
+				utils.cd['heal'] = utils.cdMax.get('heal')
+				bullet = self.mana.sprites()[0:utils.cost.get('heal')]
 				self.mana.remove(bullet)
 				self.health += 1
 				
@@ -202,10 +193,8 @@ class PlayerActive(pygame.sprite.Sprite):
 				
 		def update(self, cur, activeMap, mapWidth, mapHeight):
 			if self.isAlive:
-				self.ShootCD -= 1
-				self.waveCD -= 1
-				self.wallCD -= 1
-				self.healCD -= 1
+				for cd in utils.cd:
+					utils.cd[cd] -= 1
 				
 				self.rotating(cur)
 				activeMap.blit(self.image, self.rect)

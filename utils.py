@@ -36,6 +36,30 @@ difficulty = {
 	4 : "extreme",
 }
 
+#all cooldowns max
+cdMax = {
+	'shoot' : 5,
+	'wave' : 60,
+	'wall' : 60,
+	'heal' : 30,
+}
+
+#actual cooldowns
+cd = {
+	'shoot' : 0,
+	'wave' : 0,
+	'wall' : 0,
+	'heal' : 0,
+}
+
+#spells cost in mana
+cost = {
+	'wave' : 10,
+	'wall' : 5,
+	'heal' : 5,
+}
+
+#slots pos
 skillSlotPos = {
 	1 : 5,
 	2 : 50,
@@ -50,9 +74,9 @@ skillSlotPos = {
 
 #skills to buttons
 skillSlot = { 
-	1 : 1,
-	2 : 2,
-	3 : 3,
+	1 : 'wave',
+	2 : 'wall',
+	3 : 'heal',
 	4 : 0,
 	5 : 0,
 	6 : 0,
@@ -104,11 +128,12 @@ class SpellIcon():
 		self.icon = icon
 		self.manaCost = manaCost
 		self.cd = cd
+		self.skillNum = skillNum
 		
 		self.image = pygame.image.load(self.icon)
 		self.rect = (gw.get_rect().right-45, gw.get_rect().top+skillSlotPos[skillNum])
 		
-		self.buttonText = pygame.font.Font(None, 20).render(str(skillNum), 1, white)
+		self.buttonText = pygame.font.Font(None, 20).render(str(self.skillNum), 1, white)
 		
 		self.manaCostText = pygame.font.Font(None, 20).render(str(self.manaCost), 1, blue)
 		
