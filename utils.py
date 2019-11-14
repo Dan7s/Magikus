@@ -48,6 +48,7 @@ skillSlotPos = {
 	9 : 365,
 }
 
+#skills to buttons
 skillSlot = { 
 	1 : 1,
 	2 : 2,

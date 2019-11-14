@@ -33,16 +33,11 @@ class PlayerActive(pygame.sprite.Sprite):
 			self.healCD = 0
 			self.healCost = 5
 			
+			#simple skill list
 			self.spellbinding = {
 				1 : self.summon_wave,
 				2 : self.summon_wall,
 				3 : self.heal_spell,
-				4 : 0,
-				5 : 0,
-				6 : 0,
-				7 : 0,
-				8 : 0,
-				9 : 0,
 			}
 			
 			self.isAlive = True

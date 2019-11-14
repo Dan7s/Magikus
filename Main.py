@@ -282,6 +282,8 @@ class GAME():
 		wall_icon = SpellIcon("sprites/icons/wall_icon.png", self.gw, self.player.wallCD, self.player.wallCost, 2)
 		healing_icon = SpellIcon("sprites/icons/healing_icon.png", self.gw, self.player.healCD, self.player.healCost, 3)
 		
+		#skills on bar go in group here
+			
 		#game loop
 		while Game_Running:
 			for event in pygame.event.get():
@@ -325,7 +327,25 @@ class GAME():
 			
 			if activeKey[pygame.K_3]:
 				self.player.spellbinding(3)(cur)
+				
+			if activeKey[pygame.K_4]:
+				self.player.spellbinding(4)(cur)
+				
+			if activeKey[pygame.K_5]:
+				self.player.spellbinding(5)(cur)
 
+			if activeKey[pygame.K_6]:
+				self.player.spellbinding(6)(cur)
+				
+			if activeKey[pygame.K_7]:
+				self.player.spellbinding(7)(cur)
+				
+			if activeKey[pygame.K_8]:
+				self.player.spellbinding(8)(cur)
+				
+			if activeKey[pygame.K_9]:
+				self.player.spellbinding(9)(cur)		
+		
 
 			#window_fill
 			self.gw.fill(utils.black)
