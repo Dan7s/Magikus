@@ -25,7 +25,7 @@ class PlayerActive(pygame.sprite.Sprite):
 			self.exp = 0
 			
 			#simple skill list
-			self.spellbinding = {
+			self.spells = {
 				'wave' : self.summon_wave,
 				'wall' : self.summon_wall,
 				'heal' : self.heal_spell,

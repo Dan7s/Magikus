@@ -243,3 +243,15 @@ class SwitchButton():
 			self.buttonCD -= 1
 		self.text = pygame.font.Font(None, self.size[1]).render(text, 1, red)
 		self.draw(gw)
+
+class DragIcon():
+	def __init__(self, icon, pos):
+		self.icon = icon
+		self.image = pygame.image.load(self.icon)
+		self.rect = pygame.Rect(pos, self.image.get_rect().size)
+		
+		self.draging = False
+		
+	def update(self, gw):
+		gw.blit(self.image, self.rect)
+		

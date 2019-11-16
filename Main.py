@@ -2,7 +2,7 @@ import pygame, random, math
 from player import PlayerActive
 import enemies_file
 import utils
-from utils import HudBars, SpellIcon, TextButton, SwitchButton
+from utils import HudBars, SpellIcon, TextButton, SwitchButton, DragIcon
 from map_file import mainMap
 pygame.init()
 
@@ -152,6 +152,72 @@ class GAME():
 		self.player.isAlive = True
 		self.map.generateMap(self.actualDifficulty)
 		self.playGame()
+		
+	#skill options (slots etc.)
+	def skillsOptions(self):
+		skillsOptions = True
+		icon_options_group = []
+		icon_counter = 1
+		self.gw.fill(utils.black)
+		
+		#text and buttons
+		self.DisplayText('Skills', self.gw.get_rect().centerx - 80, self.gw.get_rect().centery - 280, 82, utils.red)
+		back_button = TextButton((self.gw.get_rect().centerx - 350, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Back")
+		defaults_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Reset")
+		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
+		for spell in self.player.spells:
+			icon = DragIcon("sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-20, self.gw.get_rect().centery + 90))
+			icon_options_group.insert(icon_counter-1, icon)
+			icon_counter += 1
+			
+		#skill options loop
+		while skillsOptions:
+			self.gw.fill(utils.black)
+			#temporary text
+			self.DisplayText('Skills', self.gw.get_rect().centerx - 80, self.gw.get_rect().centery - 280, 82, utils.red)
+			
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					pygame.quit()
+					quit()
+				if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+					self.pause()
+					
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if event.button == 1:
+						for icon in icon_options_group:
+							if icon.rect.collidepoint(event.pos):
+								icon.draging = True
+								mouse_x, mouse_y = event.pos
+								offset_x = icon.rect.x - mouse_x
+								offset_y = icon.rect.y - mouse_y
+				elif event.type == pygame.MOUSEBUTTONUP:
+					for icon in icon_options_group:
+						if icon.draging:
+							icon.draging = False
+				elif event.type == pygame.MOUSEMOTION:
+					for icon in icon_options_group:
+						if icon.draging:
+							mouse_x, mouse_y = event.pos
+							icon.rect.x = mouse_x + offset_x
+							icon.rect.y = mouse_y + offset_y
+								
+			#buttons
+			if back_button.isClicked():
+				self.pause()
+			if defaults_button.isClicked():
+				pass
+			if set_button.isClicked():
+				pass
+				
+			#Updates
+			back_button.update(self.gw)
+			defaults_button.update(self.gw)
+			set_button.update(self.gw)
+			for icon in icon_options_group:
+				icon.update(self.gw)
+			pygame.display.update()
+			self.clock.tick(self.FPS)
 	
 	#options
 	def options(self, options_type):
@@ -232,7 +298,7 @@ class GAME():
 		self.DisplayText('Game Paused', self.gw.get_rect().centerx - 200, self.gw.get_rect().centery - 280, 82, utils.red)
 		resume_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery - 180), (200, 50), utils.blue, "Resume")
 		restart_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery - 100), (200, 50), utils.blue, "Restart")
-		save_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery - 20), (200, 50), utils.blue, "Save game")
+		skill_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery - 20), (200, 50), utils.blue, "Skills")
 		load_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 60), (200, 50), utils.blue, "Load Game")
 		options_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 140), (200, 50), utils.blue, "Options")
 		exit_button = TextButton((self.gw.get_rect().centerx - 100 , self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Exit Game")
@@ -253,8 +319,8 @@ class GAME():
 				self.playGame()
 			if restart_button.isClicked():
 				self.restartGame()
-			if save_button.isClicked():
-				pass
+			if skill_button.isClicked():
+				self.skillsOptions()
 			if load_button.isClicked():
 				pass
 			if options_button.isClicked():
@@ -266,7 +332,7 @@ class GAME():
 			#Updates
 			resume_button.update(self.gw)
 			restart_button.update(self.gw)
-			save_button.update(self.gw)
+			skill_button.update(self.gw)
 			load_button.update(self.gw)
 			options_button.update(self.gw)
 			exit_button.update(self.gw)
@@ -322,31 +388,31 @@ class GAME():
 				self.player.move(0, 1)
 
 			if activeKey[pygame.K_1]:
-				self.player.spellbinding.get(utils.skillSlot.get(1))(cur)
+				self.player.spells.get(utils.skillSlot.get(1))(cur)
 				
 			if activeKey[pygame.K_2]:
-				self.player.spellbinding.get(utils.skillSlot.get(2))(cur)
+				self.player.spells.get(utils.skillSlot.get(2))(cur)
 			
 			if activeKey[pygame.K_3]:
-				self.player.spellbinding.get(utils.skillSlot.get(3))(cur)
+				self.player.spells.get(utils.skillSlot.get(3))(cur)
 				
 			if activeKey[pygame.K_4]:
-				self.player.spellbinding.get(utils.skillSlot.get(4))(cur)
+				self.player.spells.get(utils.skillSlot.get(4))(cur)
 				
 			if activeKey[pygame.K_5]:
-				self.player.spellbinding.get(utils.skillSlot.get(5))(cur)
+				self.player.spells.get(utils.skillSlot.get(5))(cur)
 
 			if activeKey[pygame.K_6]:
-				self.player.spellbinding.get(utils.skillSlot.get(6))(cur)
+				self.player.spells.get(utils.skillSlot.get(6))(cur)
 				
 			if activeKey[pygame.K_7]:
-				self.player.spellbinding.get(utils.skillSlot.get(7))(cur)
+				self.player.spells.get(utils.skillSlot.get(7))(cur)
 				
 			if activeKey[pygame.K_8]:
-				self.player.spellbinding.get(utils.skillSlot.get(8))(cur)
+				self.player.spells.get(utils.skillSlot.get(8))(cur)
 				
 			if activeKey[pygame.K_9]:
-				self.player.spellbinding.get(utils.skillSlot.get(9))(cur)
+				self.player.spells.get(utils.skillSlot.get(9))(cur)
 		
 
 			#window_fill
@@ -379,7 +445,7 @@ class GAME():
 					self.player.addExp(1*self.actualDifficulty)
 			
 			#game_over
-			print(self.clock, len(self.group_all_enemies))
+			print(self.clock, len(self.group_all_spawners), len(self.group_all_enemies), end='\r')
 			if self.player.health <= 0:
 				self.gameover()
 			
