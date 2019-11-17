@@ -2,7 +2,7 @@ import pygame, random, math
 from player import PlayerActive
 import enemies_file
 import utils
-from utils import HudBars, SpellIcon, TextButton, SwitchButton, DragIcon
+from utils import HudBars, SpellIcon, TextButton, SwitchButton, DragIcon, SlotImage
 from map_file import mainMap
 pygame.init()
 
@@ -157,24 +157,36 @@ class GAME():
 	def skillsOptions(self):
 		skillsOptions = True
 		icon_options_group = []
+		slot_options_group = []
+		slot_counter = 1
 		icon_counter = 1
 		self.gw.fill(utils.black)
 		
 		#text and buttons
-		self.DisplayText('Skills', self.gw.get_rect().centerx - 80, self.gw.get_rect().centery - 280, 82, utils.red)
 		back_button = TextButton((self.gw.get_rect().centerx - 350, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Back")
 		defaults_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Reset")
 		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
+	
+		for slot in utils.skillSlot:
+			slot = SlotImage("sprites/icons/slot_1.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_counter)-30, self.gw.get_rect().centery -100))
+			slot_options_group.insert(slot_counter-1, slot)
+			slot_counter += 1
+		
 		for spell in self.player.spells:
-			icon = DragIcon("sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-20, self.gw.get_rect().centery + 90))
+			slot = SlotImage("sprites/icons/slot_2.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-30, self.gw.get_rect().centery + 80))
+			slot_options_group.insert(slot_counter-1, slot)
+			icon = DragIcon(spell, "sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-20, self.gw.get_rect().centery + 90))
 			icon_options_group.insert(icon_counter-1, icon)
+			slot_counter += 1
 			icon_counter += 1
 			
 		#skill options loop
 		while skillsOptions:
 			self.gw.fill(utils.black)
-			#temporary text
 			self.DisplayText('Skills', self.gw.get_rect().centerx - 80, self.gw.get_rect().centery - 280, 82, utils.red)
+			
+			for icon in icon_options_group:
+				self.DisplayText(str(icon.spell_name), icon.rect.x, icon.rect.y + 60, 28, utils.white)
 			
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -188,6 +200,7 @@ class GAME():
 						for icon in icon_options_group:
 							if icon.rect.collidepoint(event.pos):
 								icon.draging = True
+								icon.oldPos = (icon.rect.x, icon.rect.y)
 								mouse_x, mouse_y = event.pos
 								offset_x = icon.rect.x - mouse_x
 								offset_y = icon.rect.y - mouse_y
@@ -195,6 +208,11 @@ class GAME():
 					for icon in icon_options_group:
 						if icon.draging:
 							icon.draging = False
+							if not icon.rect.collidelist(slot_options_group) >= 0:
+								icon.rect.x, icon.rect.y = icon.oldPos[0], icon.oldPos[1]
+							else:
+								choosen_slot = slot_options_group[icon.rect.collidelist(slot_options_group)]
+								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
 				elif event.type == pygame.MOUSEMOTION:
 					for icon in icon_options_group:
 						if icon.draging:
@@ -214,6 +232,8 @@ class GAME():
 			back_button.update(self.gw)
 			defaults_button.update(self.gw)
 			set_button.update(self.gw)
+			for slot in slot_options_group:
+				slot.update(self.gw)
 			for icon in icon_options_group:
 				icon.update(self.gw)
 			pygame.display.update()

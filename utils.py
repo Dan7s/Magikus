@@ -245,13 +245,25 @@ class SwitchButton():
 		self.draw(gw)
 
 class DragIcon():
+	def __init__(self, spell_name, icon, pos):
+		self.icon = icon
+		self.image = pygame.image.load(self.icon)
+		self.rect = pygame.Rect(pos, self.image.get_rect().size)
+		self.spell_name = spell_name
+		
+		self.inSlot = True
+		self.draging = False
+		
+		self.oldPos = (0, 0)
+		
+	def update(self, gw):
+		gw.blit(self.image, self.rect)
+		
+class SlotImage():
 	def __init__(self, icon, pos):
 		self.icon = icon
 		self.image = pygame.image.load(self.icon)
 		self.rect = pygame.Rect(pos, self.image.get_rect().size)
 		
-		self.draging = False
-		
 	def update(self, gw):
 		gw.blit(self.image, self.rect)
-		
