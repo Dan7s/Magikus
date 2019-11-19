@@ -13,8 +13,10 @@ class mainMap():
 		
 	#generating spawners
 	def generateSpawners(self, actualDifficulty):
-		for z in range(0, actualDifficulty*2):
-			enemies_file.createSpawner(actualDifficulty, self.mapWidth, self.mapHeight)
+		enemies_file.cleaning()
+		if actualDifficulty != 0:
+			for z in range(0, actualDifficulty*2):
+				enemies_file.createSpawner(actualDifficulty, self.mapWidth, self.mapHeight)
 		
 	#generating map
 	def generateMap(self, actualDifficulty):

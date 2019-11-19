@@ -8,6 +8,11 @@ class enemies_group_class():
 	max_enemies = 200
 class spawners_group_class():
 	group_spawners = pygame.sprite.Group()
+	
+#destroy all spawners and enemies
+def cleaning():
+	enemies_group_class.group_enemies.empty()
+	spawners_group_class.group_spawners.empty()
 
 #creafing spawner
 def createSpawner(actualDifficulty, mapWidth, mapHeight):

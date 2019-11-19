@@ -208,11 +208,11 @@ class GAME():
 					for icon in icon_options_group:
 						if icon.draging:
 							icon.draging = False
-							if not icon.rect.collidelist(slot_options_group) >= 0:
-								icon.rect.x, icon.rect.y = icon.oldPos[0], icon.oldPos[1]
-							else:
-								choosen_slot = slot_options_group[icon.rect.collidelist(slot_options_group)]
+							if icon.rect.collidelist(slot_options_group) >= 0:
+								choosen_slot = slot_options_group[icon.rect.collidelist(slot_options_group)] #there is a problem!
 								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
+							else:
+								icon.rect.x, icon.rect.y = icon.oldPos[0], icon.oldPos[1]
 				elif event.type == pygame.MOUSEMOTION:
 					for icon in icon_options_group:
 						if icon.draging:
