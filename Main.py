@@ -157,9 +157,10 @@ class GAME():
 	def skillsOptions(self):
 		skillsOptions = True
 		icon_options_group = []
-		slot_options_group = []
-		slot_counter = 1
-		icon_counter = 1
+		slot_active_group = []
+		slot_disable_group = []
+		slot_active_counter = 1
+		slot_disable_counter = 1
 		self.gw.fill(utils.black)
 		
 		#text and buttons
@@ -168,17 +169,18 @@ class GAME():
 		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
 	
 		for slot in utils.skillSlot:
-			slot = SlotImage("sprites/icons/slot_1.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_counter)-30, self.gw.get_rect().centery -100))
-			slot_options_group.insert(slot_counter-1, slot)
-			slot_counter += 1
+			slot = SlotImage("sprites/icons/slot_1.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_active_counter)-30, self.gw.get_rect().centery -100))
+			slot_active_group.insert(slot_active_counter-1, slot)
+			if utils.skillSlot.get(slot_active_counter) != 0:
+				spell = utils.skillSlot.get(slot_active_counter)
+				icon = DragIcon(spell, "sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_active_counter)-20, self.gw.get_rect().centery - 90))
+				icon_options_group.insert(slot_active_counter-1, icon)
+			slot_active_counter += 1
 		
 		for spell in self.player.spells:
-			slot = SlotImage("sprites/icons/slot_2.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-30, self.gw.get_rect().centery + 80))
-			slot_options_group.insert(slot_counter-1, slot)
-			icon = DragIcon(spell, "sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*icon_counter)-20, self.gw.get_rect().centery + 90))
-			icon_options_group.insert(icon_counter-1, icon)
-			slot_counter += 1
-			icon_counter += 1
+			slot = SlotImage("sprites/icons/slot_2.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*slot_disable_counter)-30, self.gw.get_rect().centery + 80))
+			slot_disable_group.insert(slot_disable_counter-1, slot)
+			slot_disable_counter += 1
 			
 		#skill options loop
 		while skillsOptions:
@@ -201,18 +203,30 @@ class GAME():
 							if icon.rect.collidepoint(event.pos):
 								icon.draging = True
 								icon.oldPos = (icon.rect.x, icon.rect.y)
+								if icon.rect.collidelist(slot_active_group) >= 0:
+									icon.oldSlot = icon.rect.collidelist(slot_active_group)
+								else:
+									icon.oldSlot = icon.rect.collidelist(slot_disable_group)
 								mouse_x, mouse_y = event.pos
 								offset_x = icon.rect.x - mouse_x
 								offset_y = icon.rect.y - mouse_y
+								
 				elif event.type == pygame.MOUSEBUTTONUP:
 					for icon in icon_options_group:
 						if icon.draging:
 							icon.draging = False
-							if icon.rect.collidelist(slot_options_group) >= 0:
-								choosen_slot = slot_options_group[icon.rect.collidelist(slot_options_group)] #there is a problem!
+							if icon.rect.collidelist(slot_active_group) >= 0:
+								utils.skillSlot[icon.oldSlot+1] = 0
+								choosen_slot = slot_active_group[icon.rect.collidelist(slot_active_group)]
+								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
+								utils.skillSlot[icon.rect.collidelist(slot_active_group)+1] = icon.spell_name
+							elif icon.rect.collidelist(slot_disable_group) >= 0:
+								utils.skillSlot[icon.oldSlot+1] = 0
+								choosen_slot = slot_disable_group[icon.rect.collidelist(slot_disable_group)]
 								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
 							else:
 								icon.rect.x, icon.rect.y = icon.oldPos[0], icon.oldPos[1]
+								
 				elif event.type == pygame.MOUSEMOTION:
 					for icon in icon_options_group:
 						if icon.draging:
@@ -232,7 +246,9 @@ class GAME():
 			back_button.update(self.gw)
 			defaults_button.update(self.gw)
 			set_button.update(self.gw)
-			for slot in slot_options_group:
+			for slot in slot_active_group:
+				slot.update(self.gw)
+			for slot in slot_disable_group:
 				slot.update(self.gw)
 			for icon in icon_options_group:
 				icon.update(self.gw)

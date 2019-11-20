@@ -251,11 +251,10 @@ class DragIcon():
 		self.rect = pygame.Rect(pos, self.image.get_rect().size)
 		self.spell_name = spell_name
 		
-		self.inSlot = True
 		self.draging = False
 		
 		self.oldPos = (0, 0)
-		
+		self.oldSlot = -1
 	def update(self, gw):
 		gw.blit(self.image, self.rect)
 		
