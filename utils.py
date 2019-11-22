@@ -264,5 +264,7 @@ class SlotImage():
 		self.image = pygame.image.load(self.icon)
 		self.rect = pygame.Rect(pos, self.image.get_rect().size)
 		
+		self.spell_inside = 0
+		
 	def update(self, gw):
 		gw.blit(self.image, self.rect)

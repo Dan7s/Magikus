@@ -159,8 +159,7 @@ class GAME():
 		icon_options_group = []
 		slot_active_group = []
 		slot_disable_group = []
-		slot_active_counter = 1
-		slot_disable_counter = 1
+		counter = 1
 		self.gw.fill(utils.black)
 		
 		#text and buttons
@@ -168,19 +167,35 @@ class GAME():
 		defaults_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Reset")
 		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
 	
+		#active bar slots
 		for slot in utils.skillSlot:
-			slot = SlotImage("sprites/icons/slot_1.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_active_counter)-30, self.gw.get_rect().centery -100))
-			slot_active_group.insert(slot_active_counter-1, slot)
-			if utils.skillSlot.get(slot_active_counter) != 0:
-				spell = utils.skillSlot.get(slot_active_counter)
-				icon = DragIcon(spell, "sprites/icons/" + spell + "_icon.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*slot_active_counter)-20, self.gw.get_rect().centery - 90))
-				icon_options_group.insert(slot_active_counter-1, icon)
-			slot_active_counter += 1
+			slot = SlotImage("sprites/icons/slot_1.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*counter)-30, self.gw.get_rect().centery -100))
+			slot.spell_inside = utils.skillSlot.get(counter)
+			slot_active_group.insert(counter-1, slot)
+			counter += 1
 		
+		#unactive slots
+		counter = 1
 		for spell in self.player.spells:
-			slot = SlotImage("sprites/icons/slot_2.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*slot_disable_counter)-30, self.gw.get_rect().centery + 80))
-			slot_disable_group.insert(slot_disable_counter-1, slot)
-			slot_disable_counter += 1
+			slot = SlotImage("sprites/icons/slot_2.png",  (self.gw.get_rect().left + (self.gw.get_rect().width/(len(self.player.spells)+1)*counter)-30, self.gw.get_rect().centery + 80))
+			slot.spell_inside = spell
+			slot_disable_group.insert(counter-1, slot)
+			counter += 1
+		
+		#skill icons
+		counter = 1
+		for spell in self.player.spells:
+			for slot in slot_disable_group:
+				if slot.spell_inside == spell:
+					icon_x, icon_y = slot.rect.x+10, slot.rect.y+10
+					break
+			for slot in slot_active_group:
+				if slot.spell_inside == spell:
+					icon_x, icon_y = slot.rect.x+10, slot.rect.y+10
+					break
+			icon = DragIcon(spell, "sprites/icons/" + spell + "_icon.png", (icon_x, icon_y))
+			icon_options_group.insert(counter-1, icon)
+			counter += 1
 			
 		#skill options loop
 		while skillsOptions:
