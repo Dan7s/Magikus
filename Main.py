@@ -159,7 +159,6 @@ class GAME():
 		icon_options_group = []
 		slot_active_group = []
 		slot_disable_group = []
-		counter = 1
 		self.gw.fill(utils.black)
 		
 		#text and buttons
@@ -168,6 +167,7 @@ class GAME():
 		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
 	
 		#active bar slots
+		counter = 1
 		for slot in utils.skillSlot:
 			slot = SlotImage("sprites/icons/slot_1.png", (self.gw.get_rect().left + (self.gw.get_rect().width/(len(utils.skillSlot)+1)*counter)-30, self.gw.get_rect().centery -100))
 			slot.spell_inside = utils.skillSlot.get(counter)
@@ -185,10 +185,7 @@ class GAME():
 		#skill icons
 		counter = 1
 		for spell in self.player.spells:
-			for slot in slot_disable_group:
-				if slot.spell_inside == spell:
-					icon_x, icon_y = slot.rect.x+10, slot.rect.y+10
-					break
+			icon_x, icon_y = slot_disable_group[counter-1].rect.x+10, slot_disable_group[counter-1].rect.y+10
 			for slot in slot_active_group:
 				if slot.spell_inside == spell:
 					icon_x, icon_y = slot.rect.x+10, slot.rect.y+10
@@ -230,15 +227,18 @@ class GAME():
 					for icon in icon_options_group:
 						if icon.draging:
 							icon.draging = False
-							if icon.rect.collidelist(slot_active_group) >= 0:
+							if icon.rect.collidelist(slot_active_group) >= 0 and slot_active_group[icon.rect.collidelist(slot_active_group)].spell_inside == 0:
 								utils.skillSlot[icon.oldSlot+1] = 0
+								slot_active_group[icon.oldSlot].spell_inside = 0
 								choosen_slot = slot_active_group[icon.rect.collidelist(slot_active_group)]
 								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
+								choosen_slot.spell_inside = icon.spell_name
 								utils.skillSlot[icon.rect.collidelist(slot_active_group)+1] = icon.spell_name
 							elif icon.rect.collidelist(slot_disable_group) >= 0:
 								utils.skillSlot[icon.oldSlot+1] = 0
-								choosen_slot = slot_disable_group[icon.rect.collidelist(slot_disable_group)]
-								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
+								for slot in slot_disable_group:
+									if slot.spell_inside == icon.spell_name:
+										icon.rect.x, icon.rect.y = slot.rect.x+10, slot.rect.y+10
 							else:
 								icon.rect.x, icon.rect.y = icon.oldPos[0], icon.oldPos[1]
 								
