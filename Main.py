@@ -28,8 +28,8 @@ class GAME():
 		self.spawnManaDelayMax = 13
 		self.FPS = 30
 		#player_stats
-		self.player.rect.x = self.gw.get_rect().centerx - self.player.rect.w/2
-		self.player.rect.y = self.gw.get_rect().centery - self.player.rect.h/2
+		self.player.rect.x = int(self.gw.get_rect().centerx - self.player.rect.w/2)
+		self.player.rect.y = int(self.gw.get_rect().centery - self.player.rect.h/2)
 		self.player_mana_rest = False
 		self.player_moving = False
 
@@ -154,7 +154,7 @@ class GAME():
 		self.playGame()
 		
 	#skill options (slots etc.)
-	def skillsOptions(self):
+	def skillsOptions(self, options_type):
 		skillsOptions = True
 		icon_options_group = []
 		slot_active_group = []
@@ -162,10 +162,7 @@ class GAME():
 		self.gw.fill(utils.black)
 		
 		#text and buttons
-		back_button = TextButton((self.gw.get_rect().centerx - 350, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Back")
-		defaults_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Reset")
-		set_button = TextButton((self.gw.get_rect().centerx + 150, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Set")
-	
+		back_button = TextButton((self.gw.get_rect().centerx - 100, self.gw.get_rect().centery + 220), (200, 50), utils.blue, "Back")	
 		#active bar slots
 		counter = 1
 		for slot in utils.skillSlot:
@@ -206,8 +203,12 @@ class GAME():
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					quit()
-				if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-					self.pause()
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_ESCAPE or event.key == pygame.K_TAB:
+						if options_type == 'inGame':
+							self.playGame()
+						elif options_type == 'inPause':
+							self.pause()
 					
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					if event.button == 1:
@@ -217,8 +218,10 @@ class GAME():
 								icon.oldPos = (icon.rect.x, icon.rect.y)
 								if icon.rect.collidelist(slot_active_group) >= 0:
 									icon.oldSlot = icon.rect.collidelist(slot_active_group)
+									icon.oldSlotActive = True
 								else:
 									icon.oldSlot = icon.rect.collidelist(slot_disable_group)
+									icon.oldSlotActive = False
 								mouse_x, mouse_y = event.pos
 								offset_x = icon.rect.x - mouse_x
 								offset_y = icon.rect.y - mouse_y
@@ -228,14 +231,17 @@ class GAME():
 						if icon.draging:
 							icon.draging = False
 							if icon.rect.collidelist(slot_active_group) >= 0 and slot_active_group[icon.rect.collidelist(slot_active_group)].spell_inside == 0:
-								utils.skillSlot[icon.oldSlot+1] = 0
-								slot_active_group[icon.oldSlot].spell_inside = 0
+								if icon.oldSlotActive:
+									utils.skillSlot[icon.oldSlot+1] = 0
+									slot_active_group[icon.oldSlot].spell_inside = 0
 								choosen_slot = slot_active_group[icon.rect.collidelist(slot_active_group)]
 								icon.rect.x, icon.rect.y = choosen_slot.rect.x+10, choosen_slot.rect.y+10
 								choosen_slot.spell_inside = icon.spell_name
 								utils.skillSlot[icon.rect.collidelist(slot_active_group)+1] = icon.spell_name
 							elif icon.rect.collidelist(slot_disable_group) >= 0:
-								utils.skillSlot[icon.oldSlot+1] = 0
+								if icon.oldSlotActive:
+									utils.skillSlot[icon.oldSlot+1] = 0
+									slot_active_group[icon.oldSlot].spell_inside = 0
 								for slot in slot_disable_group:
 									if slot.spell_inside == icon.spell_name:
 										icon.rect.x, icon.rect.y = slot.rect.x+10, slot.rect.y+10
@@ -251,16 +257,13 @@ class GAME():
 								
 			#buttons
 			if back_button.isClicked():
-				self.pause()
-			if defaults_button.isClicked():
-				pass
-			if set_button.isClicked():
-				pass
+				if options_type == 'inGame':
+					self.playGame()
+				elif options_type == 'inPause':
+					self.pause()
 				
 			#Updates
 			back_button.update(self.gw)
-			defaults_button.update(self.gw)
-			set_button.update(self.gw)
 			for slot in slot_active_group:
 				slot.update(self.gw)
 			for slot in slot_disable_group:
@@ -371,7 +374,7 @@ class GAME():
 			if restart_button.isClicked():
 				self.restartGame()
 			if skill_button.isClicked():
-				self.skillsOptions()
+				self.skillsOptions('inPause')
 			if load_button.isClicked():
 				pass
 			if options_button.isClicked():
@@ -410,15 +413,18 @@ class GAME():
 					pygame.quit()
 					quit()
 
-				if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-					self.pause()
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_ESCAPE:
+						self.pause()
+					if event.key == pygame.K_TAB:
+						self.skillsOptions('inGame')
 
 			#Player_controll
 			activeKey = pygame.key.get_pressed()
 			cur = pygame.mouse.get_pos()
 			cur = (cur[0] - self.map.offsetX, cur[1] - self.map.offsetY)
 			mouse = pygame.mouse.get_pressed()
-
+				
 			if activeKey[pygame.K_d] or activeKey[pygame.K_a] or activeKey[pygame.K_w] or activeKey[pygame.K_s]:
 				self.player_moving = True
 				self.spawnManaDelayMax = 15

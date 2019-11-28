@@ -42,6 +42,7 @@ cdMax = {
 	'wave' : 60,
 	'wall' : 60,
 	'heal' : 30,
+	'blink' : 30,
 }
 
 #actual cooldowns
@@ -50,6 +51,7 @@ cd = {
 	'wave' : 0,
 	'wall' : 0,
 	'heal' : 0,
+	'blink' : 0,
 }
 
 #spells cost in mana
@@ -57,6 +59,7 @@ cost = {
 	'wave' : 10,
 	'wall' : 5,
 	'heal' : 5,
+	'blink' : 10,
 }
 
 #slots pos
@@ -77,7 +80,7 @@ skillSlot = {
 	1 : 'wave',
 	2 : 'wall',
 	3 : 'heal',
-	4 : 0,
+	4 : 'blink',
 	5 : 0,
 	6 : 0,
 	7 : 0,
@@ -255,6 +258,8 @@ class DragIcon():
 		
 		self.oldPos = (0, 0)
 		self.oldSlot = -1
+		self.oldSlotActive = True
+		
 	def update(self, gw):
 		gw.blit(self.image, self.rect)
 		

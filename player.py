@@ -29,6 +29,7 @@ class PlayerActive(pygame.sprite.Sprite):
 				'wave' : self.summon_wave,
 				'wall' : self.summon_wall,
 				'heal' : self.heal_spell,
+				'blink' : self.blink_spell,
 			}
 			
 			self.isAlive = True
@@ -178,6 +179,13 @@ class PlayerActive(pygame.sprite.Sprite):
 				bullet = self.mana.sprites()[0:utils.cost.get('heal')]
 				self.mana.remove(bullet)
 				self.health += 1
+				
+		def blink_spell(self, target):
+			if len(self.mana) >= utils.cost.get('blink') and target != (self.rect.x, self.rect.y):
+				utils.cd['blink'] = utils.cdMax['blink']
+				bullet = self.mana.sprites()[0:utils.cost.get('blink')]
+				self.mana.remove(bullet)
+				self.rect.x, self.rect.y = target[0], target[1]
 				
 		def takeDemage(self):
 			self.health -= 1
